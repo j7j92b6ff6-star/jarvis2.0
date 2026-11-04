@@ -111,7 +111,9 @@ document.getElementById('savePrice').addEventListener('click',()=>{
  }
  document.getElementById('priceInput').value='';
 });
-
+let jarvisHistory = JSON.parse(
+  localStorage.getItem('jarvisHistory') || '[]'
+);
 const askButton = document.getElementById('askAI');
 
 if (askButton) {
@@ -137,9 +139,12 @@ if (askButton) {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ message: prompt })
-        }
-      );
+          body: JSON.stringify({
+  message: prompt,
+  history: jarvisHistory
+})
+        
+ 
 
       const data = await response.json();
 
@@ -148,7 +153,21 @@ if (askButton) {
       }
 
       say(data.answer);
-      status.textContent = 'JARVIS yanıtını hazırladı efendim.';
+
+jarvisHistory.push(
+  { role: 'user', text: prompt },
+  { role: 'model', text: data.answer }
+);
+
+jarvisHistory = jarvisHistory.slice(-20);
+
+localStorage.setItem(
+  'jarvisHistory',
+  JSON.stringify(jarvisHistory)
+);
+
+status.textContent = 'JARVIS yanıtını hazırladı efendim.';
+      
 
     } catch (error) {
       status.textContent = 'Bağlantı kurulamadı: ' + error.message;
