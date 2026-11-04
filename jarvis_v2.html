@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d18">
+<title>JARVIS — Kişisel Asistan</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#111a2b;--line:#24334b;--cyan:#6ee7f9;--muted:#9aabc2;--white:#eef5ff;--green:#63e6a2;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#1c3855 0%,var(--bg) 55%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--white);min-height:100vh}
+main{width:min(720px,100%);margin:auto;padding:24px 18px 42px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.brand{letter-spacing:.24em;font-size:13px;color:var(--cyan);font-weight:700}.status{font-size:11px;color:var(--green);border:1px solid #285b4a;border-radius:99px;padding:7px 10px}
+.hero{text-align:center;padding:24px 8px 28px}.orb{width:116px;height:116px;border-radius:50%;margin:0 auto 18px;border:1px solid #5ddff0;box-shadow:0 0 22px #39c8e855,inset 0 0 25px #39c8e833;display:grid;place-items:center;background:radial-gradient(circle,#1c5267,#102039 65%,#0a1120);position:relative}.orb:before,.orb:after{content:"";position:absolute;inset:-9px;border:1px solid #4bb7d455;border-radius:50%}.orb:after{inset:-17px;border-color:#4bb7d422}.orb span{font-size:29px;letter-spacing:.12em;color:#c8f8ff;text-shadow:0 0 14px #55dff5}
+h1{font-size:30px;letter-spacing:.18em;margin:0 0 7px} .sub{color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#121d30,#0e1727);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 10px 28px #0002}.panel h2{font-size:14px;letter-spacing:.08em;margin:0 0 14px;color:#cde9f4}.chat{min-height:70px;color:#dce8f8;line-height:1.5;font-size:15px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:1px solid #31516a;background:#14283b;color:var(--white);border-radius:12px;padding:13px 12px;font-size:14px;font-weight:600}.btn.primary{background:linear-gradient(120deg,#17627a,#16465d);border-color:#4db9d0}.btn:active{transform:scale(.99)}.row{display:flex;gap:10px;align-items:center}.row input{min-width:0;flex:1}.field{width:100%;background:#091321;border:1px solid #30445e;border-radius:10px;padding:12px;color:var(--white);font-size:16px}.muted{color:var(--muted);font-size:12px;line-height:1.5}.price{font-size:32px;font-weight:700;letter-spacing:.02em}.price small{font-size:13px;color:var(--muted);font-weight:500}.change{font-size:13px;margin-top:5px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:#0a1423;border:1px solid #24344c;border-radius:12px;padding:13px}.tile label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.tile strong{font-size:15px}.footer{text-align:center;color:#71839c;font-size:11px;line-height:1.6;margin-top:22px}button{cursor:pointer}
+@media(max-width:390px){main{padding:18px 13px 32px}.actions{grid-template-columns:1fr}.price{font-size:28px}}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div class="brand">STARK INDUSTRIES / PERSONAL AI</div><div class="status">● PROTOTİP</div></div>
+ <section class="hero">
+  <div class="orb"><span>J</span></div>
+  <h1>JARVIS</h1>
+  <div class="sub">Kişisel sesli asistanınız</div>
+ </section>
+ <section class="panel">
+  <h2>ASİSTAN</h2>
+  <div class="chat" id="reply">İyi günler efendim. Sistem arayüzü hazır. Size nasıl yardımcı olabilirim?</div>
+  <div class="actions" style="margin-top:15px">
+   <button class="btn primary" id="speakBtn">▶ JARVIS konuşsun</button>
+   <button class="btn" id="listenBtn">🎙 Konuşarak komut ver</button>
+  </div>
+  <p class="muted" id="voiceStatus" style="margin-bottom:0">Sesli yanıt cihazınızın desteklediği Türkçe sese bağlıdır. Mikrofon özelliği tarayıcı desteği ve izin gerektirir.</p>
+ </section>
+
+ <section class="panel">
+  <h2>YAPAY ZEKÂ BAĞLANTISI · ÜCRETSİZ</h2>
+  <div class="chat" style="margin-bottom:12px">Bir isteğini yaz. JARVIS metni kopyalayıp ChatGPT'yi açar; mesajı ChatGPT'ye yapıştırıp gönderebilirsin.</div>
+  <textarea class="field" id="askInput" rows="3" placeholder="Efendim, bugün sizin için ne araştırayım?"></textarea>
+  <button class="btn primary" id="askAI" style="width:100%;margin-top:10px">JARVIS ile ChatGPT'ye bağlan</button>
+  <p class="muted" id="aiStatus" style="margin-bottom:0">Bu yöntem ücretsiz ChatGPT hesabını kullanır. Otomatik arka plan bağlantısı değildir; mesajı sen gönderirsin.</p>
+ </section>
+
+ <section class="panel">
+  <h2>GRAM ALTIN TAKİBİ</h2>
+  <div class="price" id="priceView">— <small>TL / gram</small></div>
+  <div class="change" id="changeView">Henüz fiyat girilmedi.</div>
+  <div class="row" style="margin-top:15px">
+   <input class="field" id="priceInput" type="number" min="0" step="0.01" placeholder="Gram altın fiyatını gir (TL)">
+   <button class="btn primary" id="savePrice">Kaydet</button>
+  </div>
+  <div class="grid" style="margin-top:12px">
+   <div class="tile"><label>ÖNCEKİ KAYIT</label><strong id="previous">—</strong></div>
+   <div class="tile"><label>SON DEĞİŞİM</label><strong id="movement">—</strong></div>
+  </div>
+  <p class="muted">Bu prototipte fiyatı sen girersin. Henüz canlı piyasa bağlantısı veya arka planda otomatik takip yoktur. Fiyat değişimini hesaplamak için en az iki kayıt gerekir.</p>
+ </section>
+ <section class="panel">
+  <h2>HIZLI KOMUTLAR</h2>
+  <div class="actions">
+   <button class="btn" data-command="Merhaba efendim. Size nasıl yardımcı olabilirim?">Selam ver</button>
+   <button class="btn" data-command="Altın fiyatını kontrol etmek için güncel gram fiyatını fiyat alanına girmeniz gerekiyor efendim.">Altın durumum</button>
+   <button class="btn" data-command="İnternet araştırması için arama sayfasını açabilirsiniz efendim.">İnternette araştır</button>
+   <button class="btn" data-command="Sistem prototip olarak çalışıyor efendim.">Sistem durumu</button>
+  </div>
+ </section>
+ <div class="footer">JARVIS prototip v0.1 · Fiyatlar yatırım tavsiyesi değildir.<br>Bankacılık şifrenizi, kart bilgilerinizi veya SMS kodlarınızı bu sayfaya girmeyin.</div>
+</main>
+<script>
+const reply=document.getElementById('reply'), voiceStatus=document.getElementById('voiceStatus');
+function say(text){
+ reply.textContent=text;
+ if ('speechSynthesis' in window){
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); u.lang='tr-TR'; u.rate=.92; u.pitch=.82;
+  window.speechSynthesis.speak(u);
+ } else { voiceStatus.textContent='Bu tarayıcı sesli yanıtı desteklemiyor.'; }
+}
+document.getElementById('speakBtn').addEventListener('click',()=>say(reply.textContent));
+document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',()=>say(b.dataset.command)));
+document.getElementById('listenBtn').addEventListener('click',()=>{
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){voiceStatus.textContent='Bu iPhone/tarayıcı ortamında konuşmayı yazıya çevirme desteklenmiyor. Hızlı komutları kullanabilirsiniz.';return;}
+ const r=new SR();r.lang='tr-TR';r.interimResults=false;r.maxAlternatives=1;
+ voiceStatus.textContent='Dinliyorum efendim…';
+ r.onresult=e=>{
+  const q=e.results[0][0].transcript.toLocaleLowerCase('tr-TR');
+  voiceStatus.textContent='Algılanan komut: '+q;
+  if(q.includes('altın')) say('Efendim, altın takibi ekranında son kaydı görebilirsiniz. Canlı fiyat bağlantısı henüz etkin değil.');
+  else if(q.includes('merhaba')||q.includes('selam')) say('Merhaba efendim. Size nasıl yardımcı olabilirim?');
+  else if(q.includes('araştır')) {say('Arama sayfasını açıyorum efendim.');window.open('https://www.google.com','_blank');}
+  else say('Komutunuzu aldım efendim: '+q+'. Bu prototipte komut yeteneklerim sınırlı.');
+ };
+ r.onerror=()=>voiceStatus.textContent='Mikrofon kullanılamadı. Safari mikrofon iznini kontrol edin.';
+ r.onend=()=>{};
+ try{r.start();}catch(e){voiceStatus.textContent='Mikrofon başlatılamadı.';}
+});
+let last=null;
+document.getElementById('savePrice').addEventListener('click',()=>{
+ const v=Number(document.getElementById('priceInput').value);
+ if(!v||v<=0){say('Efendim, lütfen geçerli bir gram altın fiyatı girin.');return;}
+ const old=last; last=v;
+ document.getElementById('priceView').innerHTML=v.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' <small>TL / gram</small>';
+ document.getElementById('previous').textContent=old===null?'—':old.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
+ if(old===null){document.getElementById('movement').textContent='İlk kayıt';document.getElementById('changeView').textContent='İlk fiyat kaydedildi.';say('Fiyat kaydedildi efendim. Değişimi hesaplamak için bir sonraki fiyat kaydını bekliyorum.');}
+ else{
+  const d=v-old,p=d/old*100,up=d>0;
+  const label=(up?'Yükseliş: ':'Düşüş: ')+Math.abs(d).toLocaleString('tr-TR',{maximumFractionDigits:2})+' TL ('+Math.abs(p).toFixed(2)+'%)';
+  document.getElementById('movement').textContent=(up?'+':'−')+Math.abs(p).toFixed(2)+'%';
+  document.getElementById('changeView').textContent=label;
+  say('Efendim, son kayda göre gram altın '+(up?'yükseldi. ':'düştü. ')+label+'.');
+ }
+ document.getElementById('priceInput').value='';
+});
+
+const askButton=document.getElementById('askAI');
+if(askButton){
+ askButton.addEventListener('click',async()=>{
+  const box=document.getElementById('askInput');
+  const status=document.getElementById('aiStatus');
+  const prompt=(box.value||'').trim();
+  if(!prompt){say('Efendim, önce araştırmamı istediğiniz konuyu yazın.');return;}
+  try{
+   await navigator.clipboard.writeText('JARVIS olarak Türkçe, net ve güvenilir biçimde cevapla. Bana efendim diye hitap et. İsteğim: '+prompt);
+   status.textContent='Mesaj kopyalandı. ChatGPT açılıyor; mesaj kutusuna yapıştırıp gönderin efendim.';
+  }catch(e){
+   status.textContent='ChatGPT açılıyor. Mesajınızı kopyalayıp oraya yapıştırın efendim.';
+  }
+  window.open('https://chatgpt.com/','_blank');
+ });
+}
+
+</script>
+</body>
+</html>
