@@ -112,21 +112,52 @@ document.getElementById('savePrice').addEventListener('click',()=>{
  document.getElementById('priceInput').value='';
 });
 
-const askButton=document.getElementById('askAI');
-if(askButton){
- askButton.addEventListener('click',async()=>{
-  const box=document.getElementById('askInput');
-  const status=document.getElementById('aiStatus');
-  const prompt=(box.value||'').trim();
-  if(!prompt){say('Efendim, önce araştırmamı istediğiniz konuyu yazın.');return;}
-  try{
-   await navigator.clipboard.writeText('JARVIS olarak Türkçe, net ve güvenilir biçimde cevapla. Bana efendim diye hitap et. İsteğim: '+prompt);
-   status.textContent='Mesaj kopyalandı. ChatGPT açılıyor; mesaj kutusuna yapıştırıp gönderin efendim.';
-  }catch(e){
-   status.textContent='ChatGPT açılıyor. Mesajınızı kopyalayıp oraya yapıştırın efendim.';
-  }
-  window.open('https://chatgpt.com/','_blank');
- });
+const askButton = document.getElementById('askAI');
+
+if (askButton) {
+  askButton.addEventListener('click', async () => {
+    const box = document.getElementById('askInput');
+    const status = document.getElementById('aiStatus');
+    const prompt = (box.value || '').trim();
+
+    if (!prompt) {
+      say('Efendim, önce bana bir soru yazın.');
+      return;
+    }
+
+    askButton.disabled = true;
+    askButton.textContent = 'JARVIS düşünüyor...';
+    status.textContent = 'İsteğiniz işleniyor efendim...';
+
+    try {
+      const response = await fetch(
+        'https://jarvis-ai.4ksz669nk5.workers.dev',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: prompt })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Bağlantı hatası');
+      }
+
+      say(data.answer);
+      status.textContent = 'JARVIS yanıtını hazırladı efendim.';
+
+    } catch (error) {
+      status.textContent = 'Bağlantı kurulamadı: ' + error.message;
+      say('Efendim, şu anda yapay zekâ bağlantısında bir sorun var.');
+    } finally {
+      askButton.disabled = false;
+      askButton.textContent = 'JARVIS ile konuş';
+    }
+  });
 }
 
 </script>
