@@ -178,7 +178,140 @@ status.textContent = 'JARVIS yanıtını hazırladı efendim.';
     }
   });
 }
+const askButton = document.getElementById('askAI');
 
+if (askButton) {
+  askButton.addEventListener('click', async () => {
+    const box = document.getElementById('askInput');
+    const status = document.getElementById('aiStatus');
+    const prompt = (box.value || '').trim();
+
+    if (!prompt) {
+      say('Efendim, önce bana bir soru yazın.');
+      return;
+    }
+
+    askButton.disabled = true;
+    askButton.textContent = 'JARVIS düşünüyor...';
+    status.textContent = 'İsteğiniz işleniyor efendim...';
+
+    try {
+      const response = await fetch(
+        'https://jarvis-ai.4ksz669nk5.workers.dev',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+  message: prompt,
+  history: jarvisHistory
+})
+        
+ 
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Bağlantı hatası');
+      }
+
+      say(data.answer);
+
+jarvisHistory.push(
+  { role: 'user', text: prompt },
+  { role: 'model', text: data.answer }
+);
+
+jarvisHistory = jarvisHistory.slice(-20);
+
+localStorage.setItem(
+  'jarvisHistory',
+  JSON.stringify(jarvisHistory)
+);
+
+status.textContent = 'JARVIS yanıtını hazırladı efendim.';
+      
+
+    } catch (error) {
+      status.textContent = 'Bağlantı kurulamadı: ' + error.message;
+      say('Efendim, şu anda yapay zekâ bağlantısında bir sorun var.');
+    } finally {
+      askButton.disabled = false;
+      askButton.textContent = 'JARVIS ile konuş';
+    }
+  });
+}
+let jarvisHistory = JSON.parse(
+  localStorage.getItem('jarvisHistory') || '[]'
+);
+
+const askButton = document.getElementById('askAI');
+
+if (askButton) {
+  askButton.addEventListener('click', async () => {
+    const box = document.getElementById('askInput');
+    const status = document.getElementById('aiStatus');
+    const prompt = (box.value || '').trim();
+
+    if (!prompt) {
+      say('Efendim, önce bana bir soru yazın.');
+      return;
+    }
+
+    askButton.disabled = true;
+    askButton.textContent = 'JARVIS düşünüyor...';
+    status.textContent = 'İsteğiniz işleniyor efendim...';
+
+    try {
+      const response = await fetch(
+        'https://jarvis-ai.4ksz669nk5.workers.dev',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: prompt,
+            history: jarvisHistory
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Bağlantı hatası');
+      }
+
+      say(data.answer);
+
+      jarvisHistory.push(
+        { role: 'user', text: prompt },
+        { role: 'model', text: data.answer }
+      );
+
+      jarvisHistory = jarvisHistory.slice(-20);
+
+      localStorage.setItem(
+        'jarvisHistory',
+        JSON.stringify(jarvisHistory)
+      );
+
+      status.textContent = 'JARVIS yanıtını hazırladı efendim.';
+
+    } catch (error) {
+      status.textContent = 'Bağlantı kurulamadı: ' + error.message;
+      say('Efendim, şu anda yapay zekâ bağlantısında bir sorun var.');
+    } finally {
+      askButton.disabled = false;
+      askButton.textContent = 'JARVIS ile konuş';
+    } 
+   });
+} 
+ 
 </script>
 </body>
 </html>
+
+
